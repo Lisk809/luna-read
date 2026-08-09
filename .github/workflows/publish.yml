@@ -1,0 +1,44 @@
+name: Publish Magazine
+
+on:
+  schedule:
+    - cron: '0 9 * * 1'    # 每周一上午 9:00（UTC）自动触发
+  workflow_dispatch:        # 支持手动触发
+
+jobs:
+  send-and-release:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm install
+
+      - name: Run send script
+        run: node scripts/send.js
+        env:
+          # EmailJS 凭证
+          EMAILJS_SERVICE_ID: ${{ secrets.EMAILJS_SERVICE_ID }}
+          EMAILJS_TEMPLATE_ID: ${{ secrets.EMAILJS_TEMPLATE_ID }}
+          EMAILJS_PUBLIC_KEY: ${{ secrets.EMAILJS_PUBLIC_KEY }}
+          EMAILJS_PRIVATE_KEY: ${{ secrets.EMAILJS_PRIVATE_KEY }}
+          # Cloudflare D1 凭证
+          CF_ACCOUNT_ID: ${{ secrets.CF_ACCOUNT_ID }}
+          CF_DATABASE_ID: ${{ secrets.CF_DATABASE_ID }}
+          CF_API_TOKEN: ${{ secrets.CF_API_TOKEN }}
+
+      - name: Create GitHub Release
+        run: |
+          TAG_NAME="v$(date +'%Y%m%d')-issue"
+          gh release create $TAG_NAME ./issues/*.md \
+            --title "杂志自动推送 $(date +'%Y-%m-%d')" \
+            --notes "本期已通过 EmailJS 发送给订阅者。"
+        env:
+          GH_TOKEN: ${{ github.token }}

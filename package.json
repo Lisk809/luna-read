@@ -1,0 +1,9 @@
+{
+  "name": "luna-read",
+  "version": "0.0.1",
+  "description": "Magazines sent via email, updated regularly.",
+  "main": "index.js",
+  "repository": "https://github.com/Lisk809/luna-read.git",
+  "author": "Lisk <liskqwq@gmail.com>",
+  "license": "MIT"
+}

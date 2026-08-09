@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>{{title}}</title>
+  <style>
+    /* 邮件客户端专用重置 & 基础样式 */
+    body, table, td, p, a, div { margin:0; padding:0; border:0; font-family: 'Geist', 'Helvetica Neue', Arial, sans-serif; }
+    .container { max-width:640px; margin:0 auto; background:#F9FAFB; padding:20px; }
+    .card { background:#FFFFFF; border-radius:24px; padding:32px 28px; box-shadow:0 20px 40px -15px rgba(0,0,0,0.05); }
+    h1 { font-size:clamp(2rem, 5vw, 2.8rem); font-weight:800; line-height:1.1; letter-spacing:-0.025em; color:#18181B; margin:0; }
+    .subtitle { color:#71717A; font-size:1.125rem; line-height:1.65; margin:12px 0 0 0; max-width:65ch; }
+    .body-text { color:#18181B; font-size:1rem; line-height:1.65; max-width:65ch; margin-top:28px; }
+    .body-text img { max-width:100%; height:auto; border-radius:12px; margin:12px 0; }
+    .body-text blockquote { border-left:4px solid {{accent_color}}; padding-left:20px; margin:20px 0; color:#71717A; }
+    .body-text a { color:{{accent_color}}; text-decoration:underline; }
+    .footer { margin-top:40px; border-top:1px solid #E2E8F0; padding-top:24px; font-size:13px; color:#94A3B8; text-align:center; }
+    .footer a { color:#71717A; text-decoration:underline; }
+    /* 响应式调整（移动端） */
+    @media only screen and (max-width: 480px) {
+      .container { padding:12px !important; }
+      .card { padding:20px 16px !important; }
+      h1 { font-size:1.8rem !important; }
+      .subtitle { font-size:1rem !important; }
+      .hero-table td { display:block !important; width:100% !important; padding:0 !important; }
+      .hero-table td:first-child { margin-bottom:16px; }
+    }
+  </style>
+</head>
+<body style="background:#F9FAFB; padding:0; margin:0;">
+  <table width="100%" cellpadding="0" cellspacing="0" bgcolor="#F9FAFB">
+    <tr><td align="center">
+      <table class="container" width="640" cellpadding="0" cellspacing="0" style="max-width:640px; width:100%; margin:0 auto; padding:20px;">
+        <tr><td>
+          <!-- 主卡片 -->
+          <table class="card" width="100%" cellpadding="0" cellspacing="0" style="background:#FFFFFF; border-radius:24px; padding:32px 28px; box-shadow:0 20px 40px -15px rgba(0,0,0,0.05);">
+            <tr><td>
+              <!-- 刊头信息 -->
+              <table width="100%" cellpadding="0" cellspacing="0">
+                <tr>
+                  <td style="font-size:12px; letter-spacing:2px; text-transform:uppercase; color:#94A3B8; padding-bottom:6px;">{{magazine_name}}</td>
+                  <td align="right" style="font-size:12px; color:#94A3B8;">{{issue}} · {{date}}</td>
+                </tr>
+                <tr><td colspan="2" style="border-top:2px solid #E2E8F0; padding-top:12px;"></td></tr>
+              </table>
+
+              <!-- Hero区域（不对称布局） -->
+              <table class="hero-table" width="100%" cellpadding="0" cellspacing="0" style="margin-top:24px;">
+                <tr>
+                  {{#if (eq layout "right-image")}}
+                    <!-- 文字在左，图片在右 -->
+                    <td width="60%" style="vertical-align:top; padding-right:20px;">
+                      <h1>{{title}}</h1>
+                      {{#if subtitle}}<p class="subtitle">{{subtitle}}</p>{{/if}}
+                    </td>
+                    <td width="40%" style="vertical-align:top;">
+                      {{#if cover_image}}
+                        <img src="{{cover_image}}" alt="Cover" style="width:100%; height:auto; border-radius:16px; display:block;"/>
+                      {{else}}
+                        <div style="background:#F1F5F9; border-radius:16px; height:120px; width:100%;"></div>
+                      {{/if}}
+                    </td>
+                  {{else if (eq layout "full-width")}}
+                    <!-- 全宽图片在上，文字在下 -->
+                    <td colspan="2">
+                      {{#if cover_image}}
+                        <img src="{{cover_image}}" alt="Cover" style="width:100%; height:auto; border-radius:16px; display:block; margin-bottom:20px;"/>
+                      {{/if}}
+                      <h1>{{title}}</h1>
+                      {{#if subtitle}}<p class="subtitle">{{subtitle}}</p>{{/if}}
+                    </td>
+                  {{else}}
+                    <!-- 默认：图片在左，文字在右（left-image） -->
+                    <td width="40%" style="vertical-align:top; padding-right:20px;">
+                      {{#if cover_image}}
+                        <img src="{{cover_image}}" alt="Cover" style="width:100%; height:auto; border-radius:16px; display:block;"/>
+                      {{else}}
+                        <div style="background:#F1F5F9; border-radius:16px; height:120px; width:100%;"></div>
+                      {{/if}}
+                    </td>
+                    <td width="60%" style="vertical-align:top;">
+                      <h1>{{title}}</h1>
+                      {{#if subtitle}}<p class="subtitle">{{subtitle}}</p>{{/if}}
+                    </td>
+                  {{/if}}
+                </tr>
+              </table>
+
+              <!-- 正文内容（由Markdown渲染后插入） -->
+              <div class="body-text">
+                {{{content_html}}}
+              </div>
+
+              <!-- 页脚 -->
+              <table class="footer" width="100%" cellpadding="0" cellspacing="0" style="margin-top:40px; border-top:1px solid #E2E8F0; padding-top:24px;">
+                <tr>
+                  <td style="font-size:13px; color:#94A3B8; text-align:center;">
+                    <a href="{{unsubscribe_url}}" style="color:#71717A; text-decoration:underline;">退订</a> ·  {{magazine_name}} · 每周一期
+                  </td>
+                </tr>
+              </table>
+            </td></tr>
+          </table>
+        </td></tr>
+      </table>
+    </td></tr>
+  </table>
+</body>
+</html>
